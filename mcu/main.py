@@ -53,8 +53,8 @@ class TurnSignal:
         self._is_tick = True
         self._is_active = False
 
-    TICK_SOUND = 'data/turn-sound-tick.raw'
-    TOCK_SOUND = 'data/turn-sound-tick.raw'
+    TICK_SOUND = 'data/turn-signal-tick.wav'
+    TOCK_SOUND = 'data/turn-signal-tick.wav'
 
     def play_tick_tock(self):
         play_cached_pwm(self.TICK_SOUND if self._is_tick else self.TOCK_SOUND)
@@ -76,13 +76,13 @@ class TurnSignal:
         Do not call long sleeps
         Do tick-tock every _period_ms
         """
-        now = time.ticks_ms()
         # if button is pressed
         self._button.update()
         if self._button.is_pressed():
             self.toggle_active()
 
         if self._is_active:
+            now = time.ticks_ms()
             if time.ticks_diff(now, self._last_triggered_time) >= self._period_ms:
                 self.play_tick_tock()
                 # мигнём выходом
@@ -104,7 +104,6 @@ def main():
     right_signal = TurnSignal(button_right, led_right)
 
     horn = Horn(pin_middle)
-
 
     while True:
         horn_active = horn.handle()
